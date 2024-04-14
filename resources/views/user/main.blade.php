@@ -2,18 +2,20 @@
 @section('content')
     <h2>Chào bạn: {{ $user->name }}</h2>
     <hr>
-    <button type="button" class="btn btn-outline-primary" onclick="reload_list_user()">Reload</button>
+    <button type="button" class="btn btn-outline-primary" onclick="reload_datatable('list_note')">Reload</button>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Tạo User Mới
+        Viết Ghi Chú Mới
     </button>
-    <table id="list_user" class="table table-striped" style="width:100%">
+    <table id="list_note" class="table table-striped" style="width:100%">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Password</th>
+                <th>ID</th>
+                <th>ID NOTE</th>
+                <th>Title</th>
+                <th>View</th>
                 <th>Create At</th>
                 <th>Update At</th>
+                <th>Manager</th>
             </tr>
         </thead>
         <tbody>
@@ -21,11 +23,13 @@
         </tbody>
         <tfoot>
             <tr>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Password</th>
+                <th>ID</th>
+                <th>ID NOTE</th>
+                <th>Title</th>
+                <th>View</th>
                 <th>Create At</th>
                 <th>Update At</th>
+                <th>Manager</th>
             </tr>
         </tfoot>
     </table>
@@ -34,84 +38,73 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Viết Ghi Chú Mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" id="exampleInputEmail1"
+                            <label for="exampleInputEmail1" class="form-label">Tiêu Đề</label>
+                            <input type="text" name="title" class="form-control" id="exampleInputEmail1"
                                 aria-describedby="emailHelp">
-                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                         </div>
+
                         <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" id="exampleInputEmail1"
-                                aria-describedby="emailHelp">
-                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">RePassword</label>
-                            <input type="password" name="re_password" class="form-control" id="exampleInputPassword1">
+                            <label for="exampleInputPassword1" class="form-label">Nội Dung</label>
+                            <textarea id="myTextEditor" name="content" class="form-control" rows="10"></textarea>
                         </div>
 
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" name="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" name="submit" class="btn btn-primary">Lưu Lại</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        var simplemde = new SimpleMDE({
+            element: document.getElementById("myTextEditor")
+        });
         document.querySelector('button[name="submit"]').addEventListener('click', function() {
-            let name = document.querySelector('input[name="name"]').value;
-            let username = document.querySelector('input[name="username"]').value;
-            let password = document.querySelector('input[name="password"]').value;
-            let re_password = document.querySelector('input[name="re_password"]').value;
+            let title = document.querySelector('input[name="title"]').value;
+            let content = simplemde.value();
             let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             this.innerHTML = 'Vui lòng chờ...';
             this.disabled = true;
-            fetch('/api/user/register', {
+            fetch("{{ route('create_note') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': token
                     },
                     body: JSON.stringify({
-                        name: name,
-                        username: username,
-                        password: password,
-                        re_password: re_password
+                        title: title,
+                        content: content
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        alert('Register success');
-                        reload_list_user();
+                        swal("Good job!", "Thêm ghi chú thành công!", "success");
+                        reload_datatable('list_note');
                     } else {
-                        alert('Register failed');
-                        this.innerHTML = 'Submit';
+                        swal("Error!", "Thêm ghi chú thất bại!", "error");
+                        this.innerHTML = 'Lưu Lại';
                         this.disabled = false;
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    swal("Error!", "Thêm ghi chú thất bại!", "error");
                     alert('Login failed');
-                    this.innerHTML = 'Submit';
+                    this.innerHTML = 'Lưu Lại';
                     this.disabled = false;
                 })
                 .finally(() => {
-                    this.innerHTML = 'Submit';
+                    this.innerHTML = 'Lưu Lại';
                     this.disabled = false;
                 });
         });

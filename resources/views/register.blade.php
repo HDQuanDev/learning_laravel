@@ -1,28 +1,37 @@
 @extends('components.main')
 @section('content')
-    <form>
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Tên</label>
-            <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    <div class="card">
+        <h5 class="card-header">Đăng Nhập</h5>
+        <div class="card-body">
+            <p class="card-text">
+            <form>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Tên</label>
+                    <input type="text" name="name" class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">RePassword</label>
+                    <input type="password" name="re_password" class="form-control" id="exampleInputPassword1">
+                </div>
+                <button type="button" name="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <hr>
+            Bạn đã có tài khoản? <a href="{{ route('login_page') }}">Đăng nhập</a>
+            </p>
         </div>
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">RePassword</label>
-            <input type="password" name="re_password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <button type="button" name="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <hr>
-    Bạn đã có tài khoản? <a href="{{ route('login_page') }}">Đăng nhập</a>
+    </div>
     <script>
         document.querySelector('button[name="submit"]').addEventListener('click', function() {
             let name = document.querySelector('input[name="name"]').value;

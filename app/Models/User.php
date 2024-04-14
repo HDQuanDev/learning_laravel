@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return self::where('id', $id)->delete();
     }
+
+    public static function get_user_by_id($id)
+    {
+        return self::where('id', $id)->first();
+    }
 }

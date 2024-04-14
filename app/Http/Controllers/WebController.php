@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Models\Note;
+use App\Models\User;
+use Parsedown;
 
 class WebController extends Controller
 {
@@ -37,5 +40,20 @@ class WebController extends Controller
             return redirect()->route('dashboard');
         }
         return view('register');
+    }
+
+    public function view_note($id)
+    {
+        $note = Note::get_note_by_id($id);
+        if (!$note) {
+            return redirect()->route('dashboard');
+        } else {
+            $Parsedown = new Parsedown();
+            $note->content = $Parsedown->text($note->content);
+            $user = $note->user_id;
+            $get_user = User::get_user_by_id($user);
+            Note::update_view($id);
+            return view('viewnote', ['user' => $get_user, 'note' => $note]);
+        }
     }
 }

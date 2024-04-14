@@ -70,6 +70,82 @@ $(document).ready(function () {
     }
 });
 
+$(document).ready(function () {
+    if ($('#list_note').length) {
+        $('#list_note').DataTable({
+            "ajax": {
+                "url": "/api/user/note/get",
+                "type": "GET",
+                "headers": {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                "data": function (d) {
+                    d.csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                },
+                "error": function (jqXHR, textStatus, errorThrown) {
+                    console.log('AJAX error: ', textStatus, ' : ', errorThrown);
+                }
+            },
+            "columns": [{
+                    "data": "id"
+                },
+                {
+                    "data": "id_note"
+                },
+                {
+                    "data": "title"
+                },
+                {
+                    "data": "view"
+                },
+                {
+                    "data": "created_at"
+                },
+                {
+                    "data": "updated_at"
+                },
+                {
+                    "data": "id"
+                }
+            ],
+            "columnDefs": [{
+                "targets": 6,
+                "render": function (data, type, row, meta) {
+                    return '<button type="button" class="btn btn-primary" onclick="copy(\'' + row.link + '\')">Copy</button>';
+                }
+            }],
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_ người dùng mỗi trang",
+                "zeroRecords": "Không tìm thấy người dùng nào",
+                "info": "Hiển thị trang _PAGE_ của _PAGES_",
+                "infoEmpty": "Không có người dùng nào",
+                "infoFiltered": "(Lọc từ _MAX_ người dùng)",
+                "search": "Tìm kiếm",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Sau",
+                    "previous": "Trước"
+
+                },
+                "processing": "Đang xử lý...",
+                "loadingRecords": "Đang tải...",
+                "emptyTable": "Bảng trống",
+                "aria": {
+                    "sortAscending": ": Sắp xếp tăng dần",
+                    "sortDescending": ": Sắp xếp giảm dần"
+                }
+            },
+            "processing": true,
+            "order": [
+                [0, 'desc']
+            ],
+        });
+    }
+});
+
+
 function reload_list_user() {
     $('#list_user').DataTable().ajax.reload();
 }
@@ -164,4 +240,20 @@ function delete_user(id) {
                     });
             }
         });
+}
+
+function reload_datatable(id) {
+    $('#' + id).DataTable().ajax.reload();
+}
+
+function copy(text) {
+    navigator.clipboard.writeText(text).then(function () {
+        swal("Copy thành công!", {
+            icon: "success",
+        });
+    }, function (err) {
+        swal("Copy thất bại!", {
+            icon: "error",
+        });
+    });
 }

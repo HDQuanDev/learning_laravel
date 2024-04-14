@@ -1,4 +1,5 @@
 @extends('components.main')
+@section('title', 'Quản lý thành viên')
 @section('content')
     <h2>Chào bạn: {{ $user->name }}</h2>
     <hr>

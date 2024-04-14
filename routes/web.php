@@ -26,3 +26,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/chat', function () {
     return view('chat');
 })->name('chat');
+Route::get('/note/{id}', [WebController::class, 'view_note'])->name('view_note');
